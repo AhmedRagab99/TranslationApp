@@ -9,10 +9,15 @@ import Foundation
 import Speech
 import AVFoundation
 import SwiftUI
+import Translation
 
 struct SpeechView: View {
     @State private var viewModel = SpeechRecognitionViewModel()
     @State private var isRecording: Bool = false
+    
+    @State private var showTranslation = false
+    @State private var selectedText: String = ""
+
     
     var body: some View {
         VStack {
@@ -80,12 +85,20 @@ struct SpeechView: View {
                                 .foregroundColor(.blue)
                         }
                         .buttonStyle(BorderlessButtonStyle())
-                                       
+                        
+                        Button(action: {
+                            selectedText = entry.text
+                            showTranslation.toggle()
+                        }) {
+                            Image(systemName: "translate")
+                                .foregroundColor(.blue)
+                        }
                     }
-                    .padding()
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             }
             .listStyle(PlainListStyle())
+            .translationPresentation(isPresented: $showTranslation, text: selectedText)
             .onAppear {
                 viewModel.observeTranscription()
             }
